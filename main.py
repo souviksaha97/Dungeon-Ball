@@ -7,7 +7,6 @@ pygame.init()
 
 FPS = 30
 borderWidth = 5
-gameStatus = False
 fpsClock = pygame.time.Clock()
 
 DISPLAYSURF = pygame.display.set_mode((500, 400), 0, 32)
@@ -23,7 +22,7 @@ dimensions = {
 			  'paddle': pygame.Rect(paddle['position']['x'], paddle['position']['y'], paddle['length'], 10)
 			 }
 
-gameStatus = {'points':0, 'level':1, 'random': 0, 'name': 'Brick Breaker', 'version': 'v1.0'}
+gameStatus = {'points':0, 'level':1, 'random': 1, 'name': 'Dungeon Ball', 'version': 'v1.0'}
 
 pygame.display.set_caption(gameStatus['name'])
 
@@ -35,12 +34,12 @@ sounds = {'paddleHit': pygame.mixer.Sound('paddle_hit.wav'),
 'wallHit': pygame.mixer.Sound('wall_hit.wav'), 
 'gameOver':pygame.mixer.Sound('game_over.wav'),
 'levelUp': pygame.mixer.Sound('level_up.wav')}
-# 'background': pygame.mixer.music.load('gamePlayMusic.wav'),
-# 'startScreen': pygame.mixer.music.load('startScreenMusic.wav')}
 
 def gameOver():
 	pygame.mixer.music.stop()
-	while True:
+	sounds['gameOver'].play()
+	keyStatus = True
+	while keyStatus:
 		pygame.draw.rect(DISPLAYSURF, colours['black'], dimensions['arena'])
 		pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
 		textSurfaceObj = fonts['largeFont'].render('GAME OVER!', True, colours['red'], colours['blue'])
@@ -53,11 +52,19 @@ def gameOver():
 				quit()
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_RETURN:
-					main()
-                
+					sounds['gameOver'].stop()
+					keyStatus = False
+				elif event.key == pygame.K_ESCAPE:
+					pygame.quit()
+					quit()
 
 		pygame.display.update()
 		fpsClock.tick(FPS)
+
+		if keyStatus == False:
+			break
+
+	main()
 
 def renderFunction():
 	global gameStatus
@@ -120,12 +127,13 @@ def introScreen():
 	pygame.mixer.music.stop()		
 
 def eventHandler():
+	global dimensions
 	keys=pygame.key.get_pressed()
-	if keys[K_LEFT] and not (dimensions['paddle'].left == (dimensions['arena'].left+borderWidth)):
+	if keys[K_LEFT] and not (dimensions['paddle'].left <= (dimensions['arena'].left+borderWidth)):
 		direction = -1*paddle['speed']
 		# print('hi left')
 		paddle['position']['x'] += direction
-	elif keys[K_RIGHT] and not (dimensions['paddle'].right == (dimensions['arena'].right-borderWidth)):
+	elif keys[K_RIGHT] and not (dimensions['paddle'].right >= (dimensions['arena'].right-borderWidth)):
 		direction = paddle['speed']
 		# print('hi right')
 		paddle['position']['x'] += direction
@@ -133,28 +141,27 @@ def eventHandler():
 		if event.type == QUIT:
 			pygame.quit()
 			exit()
-		# e
-		# 	
-		# 	print(paddle['position'][0])
+
+	dimensions['paddle'] = pygame.Rect(paddle['position']['x'], paddle['position']['y'], 100, paddle['length'])
+
 
 def ballEngine():
 	global gameStatus
-	if (ball['position']['x'] <= (dimensions['arena'].left+borderWidth)):
+	if (ball['position']['x'] <= (dimensions['arena'].left+borderWidth+ball['rad'])):
 		# print('LeftSideBounce')
-		ball['direction'] = 180 - ball['direction'] + pow(-1, np.random.randint(2))*gameStatus['random']
+		ball['direction'] = 180 - ball['direction'] + pow(-1, np.random.randint(2))*np.random.randint(gameStatus['random'])
 		sounds['wallHit'].play()
-	elif (ball['position']['x'] >= (dimensions['arena'].right-borderWidth)):
+	elif (ball['position']['x'] >= (dimensions['arena'].right-borderWidth-ball['rad'])):
 		# print('RightSideBounce')
-		ball['direction'] = 180 - ball['direction'] + pow(-1, np.random.randint(2))*gameStatus['random']
+		ball['direction'] = 180 - ball['direction'] + pow(-1, np.random.randint(2))*np.random.randint(gameStatus['random'])
 		sounds['wallHit'].play()
-	elif ball['position']['y'] <= (dimensions['arena'].top+borderWidth):
+	elif ball['position']['y'] <= (dimensions['arena'].top+borderWidth+ball['rad']):
 		# print('TopBounce')
-		ball['direction'] = 360 - ball['direction'] + pow(-1, np.random.randint(2))*gameStatus['random']
+		ball['direction'] = 360 - ball['direction'] + pow(-1, np.random.randint(2))*np.random.randint(gameStatus['random'])
 		sounds['wallHit'].play()
-	elif ball['position']['y'] >= (dimensions['arena'].bottom - borderWidth):
+	elif ball['position']['y'] >= (dimensions['arena'].bottom - borderWidth - ball['rad']):
 		# print('BottomBounce')
-		ball['speed'] = 0
-		sounds['gameOver'].play()
+		# ball['speed'] = 0
 		# gameStatus = True
 		gameOver()
 	# print(ball['direction'])
@@ -162,9 +169,9 @@ def ballEngine():
 	ball['position']['y'] += int(ball['speed']*math.sin(ball['direction']*math.pi/180))
 
 
-	if (ball['position']['y'] >= (paddle['position']['y']-ball['rad'])) and ball['position']['x'] >= dimensions['paddle'].left and ball['position']['x'] <= dimensions['paddle'].right:
+	if (ball['position']['y'] >= (paddle['position']['y']-ball['rad']) and ball['position']['y'] <= paddle['position']['y']+5-ball['rad']) and ball['position']['x'] >= dimensions['paddle'].left and ball['position']['x'] <= dimensions['paddle'].right:
 		# print('Paddle hit')
-		ball['direction'] = 360 - ball['direction'] + pow(-1, np.random.randint(2))*gameStatus['random']
+		ball['direction'] = 360 - ball['direction'] + pow(-1, np.random.randint(2))*np.random.randint(gameStatus['random'])
 		gameStatus['points'] = gameStatus['points'] + 1
 
 		sounds['paddleHit'].play()
@@ -173,19 +180,36 @@ def ballEngine():
 			ball['speed'] += 2
 			gameStatus['level'] += 1
 			gameStatus['random'] += 1
-
 			sounds['levelUp'].play()
+
+		if gameStatus['points'] % 10 == 0 and not gameStatus['points']  == 0:
+			paddle['speed'] += 1
+
+def init():
+	global ball, paddle, gameStatus
+	ball['position']['x']=200
+	ball['position']['y']=150
+	ball['direction']=np.random.randint(295, 325)
+	ball['speed']=5
+	ball['rad']=5
+
+	paddle['position']['x']=200
+	paddle['position']['y']=350
+	paddle['length']=5
+	paddle['speed']=5
+
+	gameStatus['points']=0
+	gameStatus['level']=1
+	gameStatus['random']=1
 
 
 def main():
 	introScreen()
+	init()
 	pygame.mixer.music.load('gamePlayMusic.wav')
 	pygame.mixer.music.play(-1, 0.0)
 	while True:
 		# print(paddle['position'][0])
-		direction = 0
-		dimensions['paddle'] = pygame.Rect(paddle['position']['x'], paddle['position']['y'], 100, paddle['length'])
-
 		eventHandler()
 		ballEngine()
 		renderFunction()
