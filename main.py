@@ -30,10 +30,10 @@ fonts = {'largeFont':pygame.font.Font(pygame.font.match_font('oldschooladventure
 		 'midFont':pygame.font.Font(pygame.font.match_font('oldschooladventures'), 12),
 		'tinyFont': pygame.font.Font(pygame.font.match_font('oldschooladventures'), 8)}
 
-sounds = {'paddleHit': pygame.mixer.Sound('paddle_hit.wav'), 
-'wallHit': pygame.mixer.Sound('wall_hit.wav'), 
-'gameOver':pygame.mixer.Sound('game_over.wav'),
-'levelUp': pygame.mixer.Sound('level_up.wav')}
+sounds = {'paddleHit': pygame.mixer.Sound('audio/paddle_hit.wav'), 
+'wallHit': pygame.mixer.Sound('audio/wall_hit.wav'), 
+'gameOver':pygame.mixer.Sound('audio/game_over.wav'),
+'levelUp': pygame.mixer.Sound('audio/level_up.wav')}
 
 def gameOver():
 	pygame.mixer.music.stop()
@@ -87,7 +87,7 @@ def introScreen():
 	blinkerCount = 0
 	blinkerState = True
 	blinkTime = 15
-	pygame.mixer.music.load('startScreenMusic.wav')
+	pygame.mixer.music.load('audio/startScreenMusic.wav')
 	pygame.mixer.music.play(-1, 0.0)
 	while keyStatus:
 		pygame.draw.rect(DISPLAYSURF, colours['black'], dimensions['arena'])
@@ -206,7 +206,7 @@ def init():
 def main():
 	introScreen()
 	init()
-	pygame.mixer.music.load('gamePlayMusic.wav')
+	pygame.mixer.music.load('audio/gamePlayMusic.wav')
 	pygame.mixer.music.play(-1, 0.0)
 	while True:
 		# print(paddle['position'][0])
