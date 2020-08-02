@@ -19,16 +19,16 @@ colours = {'black':(0, 0, 0),
 		   'silver':(192, 192, 192),
 		   'grey':(128, 128, 128)}
 
-ball = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]/2}, 'direction':np.random.randint(295, 325), 'speed':5, 'rad':5}
+ball = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]/3}, 'direction':np.random.randint(295, 325), 'speed':5, 'rad':5}
 
-paddle = {'position':{'x':boxSize[0], 'y':boxSize[1]-50}, 'length':5, 'speed':5}
+paddle = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]-50}, 'length':100, 'speed':5}
 
 dimensions = {
 			  'arena': pygame.Rect(0, 0, boxSize[0], boxSize[1]+10), 
 			  'paddle': pygame.Rect(paddle['position']['x'], paddle['position']['y'], paddle['length'], 10)
 			 }
 
-gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0,'name': 'Dungeon Ball', 'version': 'v1.0'}
+gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0, 'name': 'Dungeon Ball', 'version': 'v1.0'}
 
 
 fonts = {

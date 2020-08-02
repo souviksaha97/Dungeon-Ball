@@ -124,7 +124,7 @@ def eventHandler():
 			pygame.quit()
 			exit()
 
-	dimensions['paddle'] = pygame.Rect(paddle['position']['x'], paddle['position']['y'], 100, paddle['length'])
+	dimensions['paddle'] = pygame.Rect(paddle['position']['x'], paddle['position']['y'], paddle['length'], 10)
 
 def ballEngine():
 	global gameStatus
@@ -195,8 +195,8 @@ def init():
 
 	paddle['position']['x']=boxSize[0]/2
 	paddle['position']['y']=boxSize[1]-50
-	paddle['length']=5
-	paddle['speed']=5
+	paddle['length']=100
+	paddle['speed']=100
 
 	gameStatus['points']=0
 	gameStatus['level']=1
