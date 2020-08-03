@@ -22,6 +22,11 @@ def gameOver():
 			textRectObj.center = (boxSize[0]/2, boxSize[1]/2)
 			DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
+		scoreSurface = fonts['midFont'].render('Score : {}'.format(gameStatus['points']), True, colours['white'])
+		scoreSurfaceRect = scoreSurface.get_rect()
+		scoreSurfaceRect.center = (boxSize[0]/2, boxSize[1]/2 + 50)
+		DISPLAYSURF.blit(scoreSurface, scoreSurfaceRect)
+
 		blinkerCount += 1
 
 		if blinkerCount % blinkTime == 0:
@@ -102,6 +107,9 @@ def introScreen():
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_RETURN:
 					keyStatus = False
+				elif event.key == pygame.K_ESCAPE:
+					pygame.quit()
+					quit()
 		pygame.display.update()
 		fpsClock.tick(FPS)
 
@@ -152,14 +160,18 @@ def ballEngine():
 		# gameStatus = True
 		gameOver()
 	# print(ball['direction'])
-	if (ball['position']['y'] >= (paddle['position']['y']-dimensions['paddle'].height-ball['rad']) and ball['position']['y'] <= paddle['position']['y']+dimensions['paddle'].height+ball['rad']) and ball['position']['x'] >= dimensions['paddle'].left and ball['position']['x'] <= dimensions['paddle'].right:
+	if (ball['position']['y'] >= (paddle['position']['y']-ball['rad']) and ball['position']['y'] <= paddle['position']['y']+dimensions['paddle'].height+ball['rad']) and ball['position']['x'] >= dimensions['paddle'].left and ball['position']['x'] <= dimensions['paddle'].right:
 		# print('Paddle hit')
-		ball['direction'] = 360 - ball['direction'] + pow(-1, np.random.randint(2))*np.random.randint(gameStatus['random'])
+		ball['direction'] = 360 - ball['direction'] + np.random.randint(-1*gameStatus['random'],gameStatus['random'])
 		gameStatus['points'] = gameStatus['points'] + 1
 
 		sounds['paddleHit'].play()
+		print(ball['position'], paddle['position'], ball['direction'])
 
 		gameStatus['paddleHitsPerLevel'] += 1
+
+		if ball['position']['y'] >= dimensions['paddle'].top and ball['position']['y'] <= dimensions['paddle'].bottom:
+			ball['position']['y'] = dimensions['paddle'].top - ball['rad']
 
 		if gameStatus['paddleHitsPerLevel'] == (gameStatus['level']*5) and not gameStatus['points']  == 0:
 			ball['speed'] += 2
@@ -167,13 +179,16 @@ def ballEngine():
 			gameStatus['random'] += 2
 			gameStatus['paddleHitsPerLevel'] = 0
 			sounds['levelUp'].play()
-			print(gameStatus)
 
 		if gameStatus['points'] % 10 == 0 and not gameStatus['points']  == 0:
 			paddle['speed'] += 1
 
 	if (ball['direction']>360 or ball['direction'] < 0):
 		ball['direction'] %= 360
+
+	if ball['direction'] % 90 >= 85 and ball['direction'] % 90 <=89 or ball['direction'] % 90 >= 0 and ball['direction'] % 90 <= 5:
+		ball['direction'] += np.random.randint(-2*gameStatus['random'],2*gameStatus['random'])
+
 
 	if ball['position']['y'] < borderWidth+ball['rad']:
 		ball['position']['y'] = borderWidth+ball['rad']
@@ -196,7 +211,7 @@ def init():
 	paddle['position']['x']=boxSize[0]/2
 	paddle['position']['y']=boxSize[1]-50
 	paddle['length']=100
-	paddle['speed']=100
+	paddle['speed']=5
 
 	gameStatus['points']=0
 	gameStatus['level']=1
