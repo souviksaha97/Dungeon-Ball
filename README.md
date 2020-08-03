@@ -2,6 +2,13 @@
 
 A simple game designed using Pygame on Python 3.8.5, inspired by a whole generation of 8-bit games.
 
+## Intro Screen
+
+![Main Screen](https://user-images.githubusercontent.com/20140879/89157380-0f78ce80-d58a-11ea-80ba-9cc2be8b7ceb.png)
+
+## Game Screen
+
+![Game Screen](https://user-images.githubusercontent.com/20140879/89157139-a42efc80-d589-11ea-9481-138d62847180.png)
 
 # Rules
 
