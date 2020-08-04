@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import numpy as np 
 import math
+from sys import exit
 pygame.init()
 
 from variables import *
@@ -103,13 +104,13 @@ def introScreen():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
-				quit()
+				exit()
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_RETURN:
 					keyStatus = False
 				elif event.key == pygame.K_ESCAPE:
 					pygame.quit()
-					quit()
+					exit()
 		pygame.display.update()
 		fpsClock.tick(FPS)
 
