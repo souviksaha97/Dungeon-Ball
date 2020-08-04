@@ -32,12 +32,12 @@ gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0, 'nam
 
 
 fonts = {
-		 'largeFont':pygame.font.Font('fonts/Ancient_Modern_Tales_Regular.ttf', 64),
-		 'midFont':pygame.font.Font('fonts/Old_School_Adventures_Regular.ttf', 12),
-		 'tinyFont': pygame.font.Font('fonts/Old_School_Adventures_Regular.ttf', 8)
+		 'largeFont':pygame.font.Font(os.getcwd()+'\\fonts\\Ancient_Modern_Tales_Regular.ttf', 64),
+		 'midFont':pygame.font.Font(os.getcwd()+'\\fonts\\Old_School_Adventures_Regular.ttf', 12),
+		 'tinyFont': pygame.font.Font(os.getcwd()+'\\fonts\\Old_School_Adventures_Regular.ttf', 8)
 		}
 
-sounds = {'paddleHit': pygame.mixer.Sound('audio/paddle_hit.wav'), 
-'wallHit': pygame.mixer.Sound('audio/wall_hit.wav'), 
-'gameOver':pygame.mixer.Sound('audio/game_over.wav'),
-'levelUp': pygame.mixer.Sound('audio/level_up.wav')}
+sounds = {'paddleHit': pygame.mixer.Sound(os.getcwd()+'\\audio\\paddle_hit.wav'), 
+'wallHit': pygame.mixer.Sound(os.getcwd()+'\\audio\\wall_hit.wav'), 
+'gameOver':pygame.mixer.Sound(os.getcwd()+'\\audio\\game_over.wav'),
+'levelUp': pygame.mixer.Sound(os.getcwd()+'\\audio\\level_up.wav')}
