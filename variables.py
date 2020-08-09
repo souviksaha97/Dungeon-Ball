@@ -7,7 +7,13 @@ import os
 FPS = 30
 borderWidth = 5
 
+powerUp = {'isPresent':False}
+
 boxSize = (700, 400)
+
+isMute = False
+
+powerUpTimer = 0
 
 colours = {'black':(0, 0, 0),
 		   'red': (255, 0, 0),
@@ -19,16 +25,16 @@ colours = {'black':(0, 0, 0),
 		   'silver':(192, 192, 192),
 		   'grey':(128, 128, 128)}
 
-ball = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]/3}, 'direction':np.random.randint(295, 325), 'speed':5, 'rad':5}
+ball = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]/3}, 'direction':np.random.randint(295, 325), 'speed':7, 'rad':5}
 
-paddle = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]-50}, 'length':100, 'speed':5}
+paddle = {'position':{'x':boxSize[0]/2, 'y':boxSize[1]-50}, 'length':100, 'speed':7, 'direction':'left'}
 
 dimensions = {
 			  'arena': pygame.Rect(0, 0, boxSize[0], boxSize[1]+10), 
 			  'paddle': pygame.Rect(paddle['position']['x'], paddle['position']['y'], paddle['length'], 10)
 			 }
 
-gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0, 'name': 'Dungeon Ball', 'version': 'v1.0'}
+gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0, 'name': 'Dungeon Ball', 'powerUp': False, 'version': 'v1.0'}
 
 
 fonts = {
@@ -42,4 +48,8 @@ sounds = {
 			'wallHit': pygame.mixer.Sound(os.path.join(os.getcwd(), 'audio', 'wall_hit.wav')), 
 			'gameOver':pygame.mixer.Sound(os.path.join(os.getcwd(), 'audio', 'game_over.wav')),
 			'levelUp': pygame.mixer.Sound(os.path.join(os.getcwd(), 'audio', 'level_up.wav'))
+		}
+
+images = {
+			'powerUp': pygame.image.load(os.path.join(os.getcwd(), 'images', 'potion.png'))
 		}

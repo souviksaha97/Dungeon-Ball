@@ -8,8 +8,10 @@ pygame.init()
 from variables import *
 
 def gameOver():
+	global isMute
 	pygame.mixer.music.stop()
-	sounds['gameOver'].play()
+	if not isMute:
+		sounds['gameOver'].play()
 	keyStatus = True
 	blinkerCount = 0
 	blinkerState = True
@@ -45,6 +47,8 @@ def gameOver():
 				elif event.key == pygame.K_ESCAPE:
 					pygame.quit()
 					exit()
+				elif event.key == pygame.K_m:
+					isMute = not isMute
 
 		pygame.display.update()
 		fpsClock.tick(FPS)
@@ -70,13 +74,18 @@ def renderFunction():
 	levelSurfaceRect.center = (boxSize[0]-40, boxSize[1]-10)
 	DISPLAYSURF.blit(levelSurface, levelSurfaceRect)
 
+	if powerUp['isPresent']:
+		DISPLAYSURF.blit(images['powerUp'], powerUp['location'])
+
 def introScreen():
+	global isMute
 	keyStatus = True
 	blinkerCount = 0
 	blinkerState = True
 	blinkTime = 15
-	pygame.mixer.music.load('audio/startScreenMusic.wav')
-	pygame.mixer.music.play(-1, 0.0)
+	if not isMute:
+		pygame.mixer.music.load(os.path.join(os.getcwd(), 'audio', 'startScreenMusic.wav'))
+		pygame.mixer.music.play(-1, 0.0)
 	while keyStatus:
 		pygame.draw.rect(DISPLAYSURF, colours['grey'], dimensions['arena'])
 		# pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
@@ -111,6 +120,14 @@ def introScreen():
 				elif event.key == pygame.K_ESCAPE:
 					pygame.quit()
 					exit()
+				elif event.key == pygame.K_m:
+					isMute = not isMute
+					if isMute:
+						pygame.mixer.music.stop()
+					else:
+						pygame.mixer.music.load(os.path.join(os.getcwd(), 'audio', 'startScreenMusic.wav'))
+						pygame.mixer.music.play(-1, 0.0)
+
 		pygame.display.update()
 		fpsClock.tick(FPS)
 
@@ -118,25 +135,43 @@ def introScreen():
 	pygame.mixer.music.stop()		
 
 def eventHandler():
-	global dimensions
+	global dimensions, isMute
 	keys=pygame.key.get_pressed()
+
 	if keys[K_LEFT] and not (dimensions['paddle'].left <= (dimensions['arena'].left+borderWidth)):
 		direction = -1*paddle['speed']
-		# print('hi left')
+		paddle['direction'] = 'left'
 		paddle['position']['x'] += direction
+		# print('hi left')
 	elif keys[K_RIGHT] and not (dimensions['paddle'].right >= (dimensions['arena'].right-borderWidth)):
 		direction = paddle['speed']
-		# print('hi right')
+		paddle['direction'] = 'right'
 		paddle['position']['x'] += direction
+	else:
+		paddle['direction'] = 'none'
+		# print('hi right')
+	
 	for event in pygame.event.get():
 		if event.type == QUIT:
 			pygame.quit()
 			exit()
+		elif event.type == pygame.KEYDOWN:
+			if event.key == pygame.K_m:
+				isMute = not isMute
+				if isMute:
+						pygame.mixer.music.stop()
+				else:
+					pygame.mixer.music.load(os.path.join(os.getcwd(), 'audio', 'gamePlayMusic.wav'))
+					pygame.mixer.music.play(-1, 0.0)
+				
 
 	dimensions['paddle'] = pygame.Rect(paddle['position']['x'], paddle['position']['y'], paddle['length'], 10)
 
+def createPowerup():
+	return np.random.randint(1, 100) % 17 == 0
+
 def ballEngine():
-	global gameStatus
+	global gameStatus, powerUp, powerUpTimer
 	if (ball['position']['x'] <= (dimensions['arena'].left+borderWidth+ball['rad'])):
 		# print('LeftSideBounce')
 		ball['direction'] = 180 - ball['direction'] + np.random.randint(-1*gameStatus['random'],gameStatus['random'])
@@ -163,11 +198,24 @@ def ballEngine():
 	# print(ball['direction'])
 	if (ball['position']['y'] >= (paddle['position']['y']-ball['rad']) and ball['position']['y'] <= paddle['position']['y']+dimensions['paddle'].height+ball['rad']) and ball['position']['x'] >= dimensions['paddle'].left and ball['position']['x'] <= dimensions['paddle'].right:
 		# print('Paddle hit')
-		ball['direction'] = 360 - ball['direction'] + np.random.randint(-1*gameStatus['random'],gameStatus['random'])
+		ball['direction'] = 360 - ball['direction'] #+ np.random.randint(-1*gameStatus['random'],gameStatus['random'])
+
+		if paddle['direction'] == 'left':
+			ball['direction'] += np.random.randint(-2*gameStatus['random'], 0)
+		elif paddle['direction'] == 'right':
+			ball['direction'] += np.random.randint(0, 2*gameStatus['random'])
+
 		gameStatus['points'] = gameStatus['points'] + 1
 
+		if not powerUp['isPresent'] and gameStatus['level'] > 2:
+			powerUp['isPresent'] = createPowerup()
+			if powerUp['isPresent']:
+				powerUp['location'] = (np.random.randint(borderWidth*10, boxSize[0]-borderWidth*10), 
+										np.random.randint(borderWidth*10, boxSize[1]-borderWidth*10))
+
 		sounds['paddleHit'].play()
-		print(ball['position'], paddle['position'], ball['direction'])
+		# print(ball['position'], paddle['position'], ball['direction'])
+		print(gameStatus)
 
 		gameStatus['paddleHitsPerLevel'] += 1
 
@@ -187,8 +235,8 @@ def ballEngine():
 	if (ball['direction']>360 or ball['direction'] < 0):
 		ball['direction'] %= 360
 
-	if ball['direction'] % 90 >= 85 and ball['direction'] % 90 <=89 or ball['direction'] % 90 >= 0 and ball['direction'] % 90 <= 5:
-		ball['direction'] += np.random.randint(-2*gameStatus['random'],2*gameStatus['random'])
+	if ball['direction'] % 90 >= 80 and ball['direction'] % 90 <=89 or ball['direction'] % 90 >= 0 and ball['direction'] % 90 <= 10:
+		ball['direction'] += np.random.randint(-5*gameStatus['random'],5*gameStatus['random'])
 
 
 	if ball['position']['y'] < borderWidth+ball['rad']:
@@ -198,31 +246,60 @@ def ballEngine():
 	elif ball['position']['x'] > dimensions['arena'].right-borderWidth-ball['rad']:
 		ball['position']['x'] = dimensions['arena'].right-borderWidth-ball['rad']
 
+
+	if powerUp['isPresent']:
+		if abs(ball['position']['x']-powerUp['location'][0]) < 10 and abs(ball['position']['y']-powerUp['location'][1]) < 10:
+			paddle['length'] += 50
+			powerUp['isPresent'] = False
+			powerUp.pop('location')
+			powerUpTimer = 0
+			gameStatus['powerUp'] = True
+
+		powerUpTimer += 1
+
+		if powerUpTimer/FPS == 10:
+			powerUp['isPresent'] = False
+			powerUp.pop('location')
+			powerUpTimer = 0
+
+	if gameStatus['powerUp']:
+		powerUpTimer += 1
+		if powerUpTimer/FPS == 15:
+			gameStatus['powerUp'] = False
+			paddle['length'] -= 50
+			powerUpTimer = 0
+
+
 	ball['position']['x'] += int(ball['speed']*math.cos(ball['direction']*math.pi/180))
 	ball['position']['y'] += int(ball['speed']*math.sin(ball['direction']*math.pi/180))
 
 def init():
-	global ball, paddle, gameStatus
+	global ball, paddle, gameStatus, powerUpisPresent
 	ball['position']['x']=boxSize[0]/2
 	ball['position']['y']=int(boxSize[1]/3)
-	ball['direction']=np.random.randint(295, 325)
-	ball['speed']=5
+	ball['direction']=np.random.randint(225, 315)
+	ball['speed']=7
 	ball['rad']=5
 
 	paddle['position']['x']=boxSize[0]/2
 	paddle['position']['y']=boxSize[1]-50
 	paddle['length']=100
-	paddle['speed']=5
+	paddle['speed']=7
 
 	gameStatus['points']=0
 	gameStatus['level']=1
 	gameStatus['random']=5
+	gameStatus['powerUp']=False
+
+	powerUp = {'isPresent':False}
 
 def main():
 	introScreen()
 	init()
-	pygame.mixer.music.load('audio/gamePlayMusic.wav')
-	pygame.mixer.music.play(-1, 0.0)
+	pygame.mixer.music.load(os.path.join(os.getcwd(),'audio', 'gamePlayMusic.wav'))
+	if not isMute:
+		pygame.mixer.music.play(-1, 0.0)
+
 
 	while True:
 		eventHandler()
