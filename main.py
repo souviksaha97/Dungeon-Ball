@@ -8,7 +8,7 @@ pygame.init()
 from variables import *
 
 def gameOver():
-	global isMute
+	global isMute, wallCreator
 	pygame.mixer.music.stop()
 	if not isMute:
 		sounds['gameOver'].play()
@@ -16,8 +16,10 @@ def gameOver():
 	blinkerCount = 0
 	blinkerState = True
 	blinkTime = 15
+	
 	while keyStatus:
-		pygame.draw.rect(DISPLAYSURF, colours['grey'], dimensions['arena'])
+		renderWall(wallCreator)
+		# pygame.draw.rect(DISPLAYSURF, colours['grey'], dimensions['arena'])
 		# pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
 		if blinkerState:
 			textSurfaceObj = fonts['largeFont'].render('GAME OVER!', True, colours['red'])
@@ -58,10 +60,32 @@ def gameOver():
 
 	main()
 
-def renderFunction():
+def renderWall(wall):
+	for i in np.arange(0, boxSize[0], 16):
+		for j in np.arange(0, boxSize[1], 16):
+			if wall[i][j] == True:
+				DISPLAYSURF.blit(images['tiles'], (i, j))
+			else:
+				DISPLAYSURF.blit(images['tileHole_1'], (i, j))
+
+			if i == 0:
+				DISPLAYSURF.blit(images['left_wall'], (i, j))
+
+			if i == boxSize[0]-16:
+				DISPLAYSURF.blit(images['right_wall'], (i, j))
+
+			if j == 0:
+				DISPLAYSURF.blit(images['top_wall'], (i, j))
+
+			# if j == boxSize[1] - 16:
+			# 	DISPLAYSURF.blit(images['spikes'], (i, j))
+
+
+def renderFunction(wall):
 	global gameStatus
-	pygame.draw.rect(DISPLAYSURF, colours['black'], dimensions['arena'])
-	pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
+
+	renderWall(wall)
+	# pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
 	pygame.draw.rect(DISPLAYSURF, colours['red'], dimensions['paddle'])
 	pygame.draw.circle(DISPLAYSURF, colours['blue'], (ball['position']['x'], ball['position']['y']), ball['rad'] , 0)
 	pointSurface = fonts['tinyFont'].render('Points : ' + str(gameStatus['points']), True, colours['white'])
@@ -78,7 +102,7 @@ def renderFunction():
 		DISPLAYSURF.blit(images['powerUp'], powerUp['location'])
 
 def introScreen():
-	global isMute
+	global isMute, wallCreator
 	keyStatus = True
 	blinkerCount = 0
 	blinkerState = True
@@ -86,8 +110,10 @@ def introScreen():
 	if not isMute:
 		pygame.mixer.music.load(os.path.join(os.getcwd(), 'audio', 'startScreenMusic.wav'))
 		pygame.mixer.music.play(-1, 0.0)
+
 	while keyStatus:
-		pygame.draw.rect(DISPLAYSURF, colours['grey'], dimensions['arena'])
+		renderWall(wallCreator)
+		# pygame.draw.rect(DISPLAYSURF, colours['grey'], dimensions['arena'])
 		# pygame.draw.rect(DISPLAYSURF, colours['brown'], dimensions['arena'], borderWidth)
 		textSurfaceObj = fonts['largeFont'].render(gameStatus['name'], True, colours['gold'])
 		textRectObj = textSurfaceObj.get_rect()
@@ -215,7 +241,7 @@ def ballEngine():
 
 		sounds['paddleHit'].play()
 		# print(ball['position'], paddle['position'], ball['direction'])
-		print(gameStatus)
+		# print(gameStatus)
 
 		gameStatus['paddleHitsPerLevel'] += 1
 
@@ -294,6 +320,7 @@ def init():
 	powerUp = {'isPresent':False}
 
 def main():
+	global wallCreator
 	introScreen()
 	init()
 	pygame.mixer.music.load(os.path.join(os.getcwd(),'audio', 'gamePlayMusic.wav'))
@@ -304,7 +331,7 @@ def main():
 	while True:
 		eventHandler()
 		ballEngine()
-		renderFunction()
+		renderFunction(wallCreator)
 		pygame.display.update()
 		fpsClock.tick(FPS)
 

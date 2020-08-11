@@ -9,11 +9,13 @@ borderWidth = 5
 
 powerUp = {'isPresent':False}
 
-boxSize = (700, 400)
+boxSize = (720, 480)
 
 isMute = False
 
 powerUpTimer = 0
+
+wallCreator = np.random.rand(boxSize[0], boxSize[1]) < 0.9
 
 colours = {'black':(0, 0, 0),
 		   'red': (255, 0, 0),
@@ -51,5 +53,12 @@ sounds = {
 		}
 
 images = {
-			'powerUp': pygame.image.load(os.path.join(os.getcwd(), 'images', 'potion.png'))
+			'powerUp': pygame.image.load(os.path.join(os.getcwd(), 'images', 'potion.png')),
+			'tiles': pygame.image.load(os.path.join(os.getcwd(), 'images', 'wall_mid.png')),
+			'tileHole_1': pygame.image.load(os.path.join(os.getcwd(), 'images', 'wall_hole_1.png')),
+			'tileHole_2': pygame.image.load(os.path.join(os.getcwd(), 'images', 'wall_hole_2.png')),
+			'left_wall': pygame.image.load(os.path.join(os.getcwd(), 'images', 'left wall.png')),
+			'right_wall': pygame.image.load(os.path.join(os.getcwd(), 'images', 'right wall.png')),
+			'top_wall': pygame.image.load(os.path.join(os.getcwd(), 'images', 'top wall.png')),
+			'spikes': pygame.image.load(os.path.join(os.getcwd(), 'images', 'floor_spikes.png'))
 		}
