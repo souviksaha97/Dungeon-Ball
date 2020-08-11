@@ -41,8 +41,8 @@ gameStatus = {'points': 0, 'level': 1, 'random': 5, 'paddleHitsPerLevel':0, 'nam
 
 fonts = {
 		 'largeFont':pygame.font.Font(os.path.join(os.getcwd(),'fonts','Ancient_Modern_Tales_Regular.ttf'), 64),
-		 'midFont':pygame.font.Font(os.path.join(os.getcwd(),'fonts', 'Old_School_Adventures_Regular.ttf'), 12),
-		 'tinyFont': pygame.font.Font(os.path.join(os.getcwd(),'fonts', 'Old_School_Adventures_Regular.ttf'), 8)
+		 'midFont':pygame.font.Font(os.path.join(os.getcwd(),'fonts', 'Old_School_Adventures_Regular.ttf'), 16),
+		 'tinyFont': pygame.font.Font(os.path.join(os.getcwd(),'fonts', 'Old_School_Adventures_Regular.ttf'), 10)
 		}
 
 sounds = {

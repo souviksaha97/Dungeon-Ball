@@ -77,8 +77,8 @@ def renderWall(wall):
 			if j == 0:
 				DISPLAYSURF.blit(images['top_wall'], (i, j))
 
-			# if j == boxSize[1] - 16:
-			# 	DISPLAYSURF.blit(images['spikes'], (i, j))
+			if j == boxSize[1] - 16 and i > 80 and i < boxSize[0]-80:
+				DISPLAYSURF.blit(images['spikes'], (i, j))
 
 
 def renderFunction(wall):
