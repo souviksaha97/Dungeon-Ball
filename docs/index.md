@@ -1,37 +1,33 @@
-## Welcome to GitHub Pages
+# Dungeon Ball
 
-You can use the [editor on GitHub](https://github.com/souviksaha97/brickbreaker/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+A simple game designed using Pygame on Python 3.8.5, inspired by a whole generation of 8-bit games.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Intro Screen
 
-### Markdown
+![Main Screen](https://user-images.githubusercontent.com/20140879/89157380-0f78ce80-d58a-11ea-80ba-9cc2be8b7ceb.png)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Game Screen
 
-```markdown
-Syntax highlighted code block
+![Game Screen](https://user-images.githubusercontent.com/20140879/89157139-a42efc80-d589-11ea-9481-138d62847180.png)
 
-# Header 1
-## Header 2
-### Header 3
+# Rules
 
-- Bulleted
-- List
+ * Use the arrow keys to move the paddle left and right to hit the ball.
+ * You level up every five hits. As the level goes up, the speed of the ball and the paddle increases.
+ * Aim to keep the ball from falling into the gutter down below.
+ * Collect the powerup to lengthen the paddle for 30 seconds.
 
-1. Numbered
-2. List
+Audio Credits to [Juhani Junkala](https://opengameart.org/content/512-sound-effects-8-bit-style) and [Adam Haynes](https://www.youtube.com/channel/UCjvrRp5J06REgUd91u8Xl3Q)  
 
-**Bold** and _Italic_ and `Code` text
+Icon Credits to [0x72](https://0x72.itch.io/dungeontileset-ii)  
 
-[Link](url) and ![Image](src)
-```
+Added suggestions from [user985366](https://codereview.stackexchange.com/users/140016/user985366) from CodeReview.
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
-### Jekyll Themes
+Feel free to comment and add new features to the game!
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/souviksaha97/brickbreaker/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Features to be added
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+* Add coins, blocks
+* Add class structure
+* Add animated sprites
