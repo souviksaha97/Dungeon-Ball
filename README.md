@@ -4,11 +4,11 @@ A simple game designed using Pygame on Python 3.8.5, inspired by a whole generat
 
 ## Intro Screen
 
-![Main Screen](https://user-images.githubusercontent.com/20140879/89157380-0f78ce80-d58a-11ea-80ba-9cc2be8b7ceb.png)
+![Main Screen](https://user-images.githubusercontent.com/20140879/90648845-a9fa3280-e257-11ea-8eb4-5bda4368fa92.png)
 
 ## Game Screen
 
-![Game Screen](https://user-images.githubusercontent.com/20140879/89157139-a42efc80-d589-11ea-9481-138d62847180.png)
+![Game Screen](https://user-images.githubusercontent.com/20140879/90648852-ab2b5f80-e257-11ea-9055-90e6c51cade1.png)
 
 # Rules
 
